@@ -1,0 +1,77 @@
+html{
+    font-family: Arial, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+}
+
+body {
+  display: flex;
+  font: 1em sans-serif;
+  margin: 0;
+  height: 100vh;
+}
+
+h1 {
+    color: #525454;
+    font-size: 22px;
+    margin: 5 5 10px 0;
+    text-align: left;
+}
+
+
+#map {
+
+    bottom:0px;
+    height: 100%;
+    width: 100%;
+    left: 362px;
+    right: 0px;
+    position: absolute;
+}
+
+#list-box {
+
+        left: 250px;
+        width: 0;
+        height: 100%;
+        margin-left: -250px;
+        overflow-y: auto;
+        background: #000;
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+
+}
+
+
+#navigation-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+
+}
+
+.navigation-list-item {
+  padding: 15px 10px;
+  cursor: pointer;
+
+
+
+}
+
+
+.navigation-heading {
+  font: bold 1em sans-serif;
+  margin: 10px;
+}
+
+#infowindow-content {
+  max-height: 30vh;
+  overflow: scroll;
+}
+
+
