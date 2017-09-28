@@ -11,17 +11,25 @@
  <!-- Google Map with Museums -->
             <div id="map"></div>
 
-        <div class="list-box">
+    <div class="list-box">
 
-            <h1 class = "title">Visit Museums in Amsterdam!</h1>
+        <h1 class = "title">Visit Museums in Amsterdam!</h1>
+        <div id="navigation-menu">
+            <input class="search-input" data-bind="textInput: query, event: {keyup: filter}" type="search" placeholder="Search Museums">
+
+    </ul>
+        </div>
 
             <h2 class="navigation-heading">Museums:</h2>
-                <ul id="navigation-list" data-bind = "foreach: museumList">
-                    <li class="navigation-list-item" data-bind = "text:name, click: $parent.setMuseum"></li>
+
+
+                <ul id="navigation-list" data-bind = "foreach: filteredMuseums">
+                    <li class="navigation-list-item" data-bind = "text:name, click: $parent.setMuseum">
+
+                    </li>
                 </ul>
             <div data-bind="with: currentMuseum">
-
-
+            </div>
             </div>
         </div>
 
@@ -35,7 +43,7 @@
         <script src="js/libs/knockout-3.2.0.js"></script>
         <script src="js/libs/jquery.min.js"></script>
 
-        <script src="js/untitled.js"></script>
+        <script src="js/app.js"></script>
 
 
     </body>
