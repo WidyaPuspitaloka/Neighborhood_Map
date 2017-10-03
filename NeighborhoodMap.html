@@ -2,26 +2,28 @@
 <html lang="en">
     <head>
         <title>Neighborhood Map</title>
-        <meta charset="utf-8"
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/styles.css">
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
 
     </head>
     <body>
  <!-- Google Map with Museums -->
             <div id="map"></div>
 
-    <div class="list-box">
+ <!-- Content with Museums -->
 
-        <h1 class = "title">Visit Museums in Amsterdam!</h1>
+        <div id="list-box">
+        <div calss ="sidebar">
+
+        <h1 id = "title"><span id="menu-icon" button type ="button"></span> Museums in Amsterdam</h1>
+
         <div id="navigation-menu">
-            <input class="search-input" data-bind="textInput: query, event: {keyup: filter}" type="search" placeholder="Search Museums">
-
-    </ul>
+            <input class="search-input" data-bind="textInput: query" type="search" placeholder="Search Museums">
         </div>
-
-            <h2 class="navigation-heading">Museums:</h2>
-
 
                 <ul id="navigation-list" data-bind = "foreach: filteredMuseums">
                     <li class="navigation-list-item" data-bind = "text:name, click: $parent.setMuseum">
@@ -31,19 +33,22 @@
             <div data-bind="with: currentMuseum">
             </div>
             </div>
+            </div>
         </div>
 
 
-<!-- API Key to load the API-->
-        <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwGy255eqElY0wdfX7Unb78LlEl_P4jac&v=3&libraries=places&callback=initMap">
-        </script>
 
 <!-- Scripts-->
         <script src="js/libs/knockout-3.2.0.js"></script>
         <script src="js/libs/jquery.min.js"></script>
 
         <script src="js/app.js"></script>
+
+
+<!-- API Key to load the API-->
+        <script async defer onerror="mapError()"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwGy255eqElY0wdfX7Unb78LlEl_P4jac&v=3&libraries=places&callback=initMap">
+        </script>
 
 
     </body>
