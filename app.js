@@ -1,4 +1,4 @@
-// Hardoced location
+// Hardcoded location
 var museumLocations = [{
     name: 'Van Gogh Museum',
     location: {
@@ -28,13 +28,6 @@ var museumLocations = [{
     }
   },
   {
-    name: 'Moco Museum - Banksy Amsterdam',
-    location: {
-      lat: 52.35871,
-      lng: 4.881902
-    }
-  },
-  {
     name: 'Stedelijk Museum',
     location: {
       lat: 52.358011,
@@ -49,14 +42,14 @@ var museumLocations = [{
     }
   },
   {
-    name: 'NEMO Science Museum',
+    name: 'NEMO (museum)',
     location: {
       lat: 52.374211,
       lng: 4.912339
     }
   },
   {
-    name: 'EYE Filmmuseum',
+    name: 'EYE Film Institute Netherlands',
     location: {
       lat: 52.384328,
       lng: 4.900809
@@ -146,14 +139,19 @@ function initMap() {
     map.fitBounds(bounds);
   }
 
-
 runApp();
 
 } // close initmap function
 
 function populateInfoWindow(marker, infowindow) {
   // Check to make sure the infowindow is not already opened on this marker.
+
+
   if (infowindow.marker != marker) {
+
+     marker.setAnimation(google.maps.Animation.BOUNCE);
+     setTimeout(function(){ marker.setAnimation(null); }, 750);
+
     infowindow.marker = marker;
     infowindow.setContent('');
     infowindow.open(map, marker);
@@ -163,16 +161,22 @@ function populateInfoWindow(marker, infowindow) {
     });
 
 
-    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + ' &format=json&callback=wikiCallBack';
+var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + ' &format=json&callback=wikiCallBack';
     $.ajax({
       url: wikiUrl,
       dataType: 'jsonp',
       success: function(data) {
-        var articleDesc = data[2][0];
-        if (articleDesc.length > 0) {
-          infowindow.setContent('<div>' + marker.name + '</div>' + articleDesc)
-        } else {
+        console.log(data);
+        if (!data[2][0]) {
           infowindow.setContent('<div> There is no wikipedia description for this Spot </div>');
+        } else {
+            var articleDesc = data[2][0];
+            if (articleDesc.length > 0) {
+              infowindow.setContent('<div>' + marker.name + '</div>' + articleDesc)
+            } else {
+              infowindow.setContent('<div> There is no wikipedia description for this Museum </div>');
+
+            }
         }
       }
       // Fallback for failed request to get an article
@@ -180,11 +184,10 @@ function populateInfoWindow(marker, infowindow) {
       infowindow.setContent('<div>There is something wrong; No Desciption Could be Loaded' + '</div>');
     });
 
-  } // close if
+   
 
-}  // close function populateinfowindow
-
-
+  } 
+}// close function populateinfowindow
 
 function makeMarkerIcon(markerColor) {
   var markerImage = new google.maps.MarkerImage(
@@ -200,7 +203,9 @@ function makeMarkerIcon(markerColor) {
 var ViewModel = function() {
   var self = this;
 
-  this.Query = ko.observable('');
+  // Create empty variable, which will give us the user's search
+  self.query = ko.observable('');
+
   this.museumList = ko.observableArray([]);
 
   this.currentMuseum = ko.observable(null);
@@ -212,45 +217,47 @@ var ViewModel = function() {
   this.setMuseum = function(clickedMuseum) {
     console.log(clickedMuseum.marker); // clickedMuseum.marker
     self.currentMuseum(clickedMuseum);
+    google.maps.event.trigger(clickedMuseum.marker,'click');
   };
-
-
-};
 
     // Places that should be visible, based on user input.
     self.filteredMuseums = ko.observableArray();
 
-    // Create empty variable, which will give us the user's search
-    self.query = ko.observable('');
+    //  filter function
+    self.filter = ko.computed(function() {
 
-    // Function to filter
-    self.filter = function () {
+    // Remove everything from the list
+    self.filteredMuseums.removeAll();
 
-        // First we remove everything from the visible list
-        self.filteredMuseums.removeAll();
+    // For each of the items
+    museumLocations.forEach(function(museumItem) {
 
-        // For each of the items in our allPlaces array...
-        self.museumLocations.forEach(function(museumItem) {
+    // Remove the marker
+    museumItem.marker.setVisible(false);
 
-            // First we remove the marker
-            museumItem.marker.setVisible(false);
-
-            // Then we compare the name of the place in the array, with the name in our search
-            if (museumItem.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
-
-                // If its the same, we push the place in the visible array (which we cleared)
-                self.filteredMuseums.push(museumItem);
+    // compare the name and push if it is correct
+    if (museumItem.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
+      self.filteredMuseums.push(museumItem);
             }
         });
 
-        // Now we have the list of all the visible places, based on our query search
-        self.filteredMuseums().forEach(function(museumItem) {
+      self.filteredMuseums().forEach(function(museumItem) {
 
-            // And we put the markers visible for these places
-            museumItem.marker.setVisible(true);
+    //  put the markers visible
+      museumItem.marker.setVisible(true);
+
+
+            });
         });
     };
 
+
+
 function runApp() {
   ko.applyBindings(new ViewModel());
+}
+
+// error handling for google maps
+function mapError() {
+  alert("Map does not load");
 }
