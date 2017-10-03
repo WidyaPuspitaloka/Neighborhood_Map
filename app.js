@@ -184,10 +184,36 @@ var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + ma
       infowindow.setContent('<div>There is something wrong; No Desciption Could be Loaded' + '</div>');
     });
 
-   
+  //Connects to the Flickr API and reads the results of the query into a JSON array. This query uses the 'flickr.photos.search' method to access all the photos in a particular person's user
+$.getJSON ("https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=23aa3559b1f29f991f5c45181b3d3f8a&format=json&nojsoncallback=1", {
+     format: 'json',
+        },
+        function (data){
+// Variable to store flick url  strings
+        var flickrURL = "" ;
+// Variable to store photos html strings
+        var photoURL = "" ;
 
-  } 
-}// close function populateinfowindow
+//Loop through the results in the JSON array. The 'data.photos.photo' bit is what you are trying to 'get at'. i.e. this loop looks at each photo in turn.
+         if (data.photos.photo.length > 0) {
+         $.each(data.photos.photo, function(i,item){
+
+//Get the url for the image.
+        flickrURL = 'https://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_m.jpg';
+        photoURL = photoURL + '<a class="flickr-img-container" target="_blank" href="' + item.link +'"><img class="flickr-img" src="' + flickrURL + '"></a>';
+        });
+        infowindow.setContent (marker.name + '<br>' + photoURL);
+        }
+        else {
+        infowindow.setContent('<div> There is no Flickr Images for this Spot </div>');
+        }
+// Fallback for failed request to get an image
+        }).fail(function() {
+        infowindow.setContent('<div>There is something wrong; No Flickr Image Could be Loaded' + '</div>');
+        });
+
+  } // close function populateinfowindow
+}
 
 function makeMarkerIcon(markerColor) {
   var markerImage = new google.maps.MarkerImage(
@@ -226,7 +252,7 @@ var ViewModel = function() {
     //  filter function
     self.filter = ko.computed(function() {
 
-    // Remove everything from the list
+    // Remove everything from the visible list
     self.filteredMuseums.removeAll();
 
     // For each of the items
@@ -243,7 +269,7 @@ var ViewModel = function() {
 
       self.filteredMuseums().forEach(function(museumItem) {
 
-    //  put the markers visible
+    //  put the markers visible for these places
       museumItem.marker.setVisible(true);
 
 
