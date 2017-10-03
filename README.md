@@ -14,8 +14,8 @@ jQuery
 Knockout JavaScript library
 
 ### Third Party API
-Wikipedia : To show description of the museums
-Flick : To show image of the museums
+- Wikipedia : To show description of the museums
+- Flickr : To show image of the museums
 
 ### How to run the application
 
