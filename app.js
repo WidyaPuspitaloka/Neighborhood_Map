@@ -247,7 +247,6 @@ var ViewModel = function() {
         google.maps.event.trigger(clickedMuseum.marker, 'click');
     };
 
-    // Places that should be visible, based on user input.
     self.filteredMuseums = ko.observableArray();
 
     //  filter function
