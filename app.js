@@ -73,7 +73,7 @@ var Museum = function(data) {
     this.location = ko.observable(data.location);
     this.marker = data.marker;
 
-} // close var Museum
+}; // close var Museum
 
 
 var map;
@@ -127,8 +127,7 @@ function initMap() {
         marker.addListener('click', function() {
             populateInfoWindow(this, largeInfowindow);
         });
-        // Two event listeners - one for mouseover, one for mouseout,
-        // to change the colors back and forth.
+        // to change the colors.
         marker.addListener('mouseover', function() {
             this.setIcon(highlightedIcon);
         });
@@ -174,7 +173,7 @@ function populateInfoWindow(marker, infowindow) {
                 } else {
                     var articleDesc = data[2][0];
                     if (articleDesc.length > 0) {
-                        infowindow.setContent('<div>' + marker.name + '</div>' + articleDesc)
+                        infowindow.setContent('<div>' + marker.name + '</div>' + articleDesc);
                     } else {
                         infowindow.setContent('<div> There is no wikipedia description for this Museum </div>');
 
