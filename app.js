@@ -153,7 +153,7 @@ function populateInfoWindow() {
         }, 750);
 
         infowindow.marker = marker;
-        // infowindow.setContent('');
+        infowindow.setContent('');
         infowindow.open(map, marker);
         // Make sure the marker property is cleared if the infowindow is closed.
         infowindow.addListener('closeclick', function() {
@@ -161,64 +161,32 @@ function populateInfoWindow() {
         });
 
 
-        var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + ' &format=json&callback=wikiCallBack';
-        $.ajax({
-            url: wikiUrl,
-            dataType: 'jsonp',
-            success: function(data) {
-                console.log(data);
-                if (!data[2][0]) {
-                    infowindow.setContent('<div> There is no wikipedia description for this Spot </div>');
-                } else {
-                    var articleDesc = data[2][0];
-                    if (articleDesc.length > 0) {
-                        marker.content = '<h2>Wikipedia Description</h2>' + marker.name + '</br>' + articleDesc;
-                    } else {
-                        marker.content = '<div> There is no wikipedia description for this Museum </div>';
+    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + ' &format=json&callback=wikiCallBack';
+    $.ajax({
+      url: wikiUrl,
+      dataType: 'jsonp',
+      success: function(data) {
+        console.log(data);
+        if (!data[2][0]) {
+          infowindow.setContent('<div> There is no wikipedia description for this Spot </div>');
+        } else {
+            var articleDesc = data[2][0];
+            if (articleDesc.length > 0) {
+              infowindow.setContent('<div>' + '<h3> Wikipedia Description </h3>' + marker.name + '</div>' + articleDesc)
+            } else {
+              infowindow.setContent('<div> There is no wikipedia description for this Spot </div>');
 
-                    }
-                }
-
-                getPhotos(marker);
             }
-            // Fallback for failed request to get an article
-        }).fail(function() {
-            infowindow.setContent('<div>There is something wrong; No Desciption Could be Loaded' + '</div>');
-        });
-        infowindow.open(map, marker);
 
-    }
+        }
+      }
+      // Fallback for failed request to get an article
+    }).fail(function() {
+      infowindow.setContent('<div>There is something wrong; No Desciption Could be Loaded' + '</div>');
+    });
 
-    function getPhotos(marker) {
-        //Connects to the Flickr API and reads the results of the query into a JSON array. This query uses the 'flickr.photos.search' method to access all the photos in a particular person's user
-        $.getJSON("https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=23aa3559b1f29f991f5c45181b3d3f8a&format=json&nojsoncallback=1", {
-                format: 'json',
-            },
-            function(data) {
-                // Variable to store flick url  strings
-                var flickrURL = "";
-                // Variable to store photos html strings
-                var photoURL = "";
 
-                //Loop through the results in the JSON array. The 'data.photos.photo' bit is what you are trying to 'get at'. i.e. this loop looks at each photo in turn.
-                if (data.photos.photo.length > 0) {
-                    $.each(data.photos.photo, function(i, item) {
-
-                        //Get the url for the image.
-                        flickrURL = 'https://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_m.jpg';
-                        photoURL = photoURL + '<a class="flickr-img-container" target="_blank" href="' + item.link + '"><img class="flickr-img" src="' + flickrURL + '"></a>';
-                    });
-                    infowindow.setContent(marker.content + marker.name + '<br>' + '<h2>Flickr Images</h2>' + photoURL);
-                } else {
-                    infowindow.setContent(marker.content + '<div> There is no Flickr Images for this Spot </div>');
-                }
-                // Fallback for failed request to get an image
-            }).fail(function() {
-            infowindow.setContent('<div>There is something wrong; No Flickr Image Could be Loaded' + '</div>');
-        });
-        infowindow.open(map, marker);
-
-    } // close function populateinfowindow
+  } // close function populateinfowindow
 }
 
 function makeMarkerIcon(markerColor) {
