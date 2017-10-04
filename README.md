@@ -15,7 +15,7 @@ Knockout JavaScript library
 
 ### Third Party API
 - Wikipedia : To show description of the museums
-- Flickr : To show image of the museums
+
 
 ### How to run the application
 
@@ -29,14 +29,13 @@ Open NeighborhoodMap.html with a web browser
 - Museum can be searched and filtered in the search bar
 - List of the identified locations
 - Wikipedia API is used to show description of the museum when selected
-- Flickr API is use to show images of the museum when selected
+
 
 ### References
 
 - [Google Maps API](https://developers.google.com/maps/documentation/javascript/)
 - [KnockoutJS](http://knockoutjs.com/documentation/introduction.html)
 - [Google Maps Geocoding](https://developers.google.com/maps/documentation/geocoding/intro)
-- [Flickr API](https://www.flickr.com/services/api/)
 - [Wikipedia API](https://www.mediawiki.org/wiki/API:Main_page)
 - Udacity's Videos Tutorial
 
