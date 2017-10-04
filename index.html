@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <header>
+        <title>Neighborhood Map</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/styles.css">
+
+
+    </header>
+    <body>
+ <!-- Google Map with Museums -->
+            <div id="map"></div>
+
+        <aside>
+ <!-- Content with Museums -->
+        <div id="list-box">
+        <div class ="sidebar">
+
+        <h1 id = "title"><span id="menu-icon"></span> Museums in Amsterdam</h1>
+
+        <div id="navigation-menu">
+            <input class="search-input" data-bind="textInput: query" type="search" placeholder="Search Museums">
+            <div class="list-toggle" data-bind="click: showList">&#9776;</div>
+        </div>
+                <ul id="navigation-list" data-bind = "foreach: filteredMuseums, visible: listOpen">
+                    <li class="navigation-list-item" data-bind = "text:name, click: $parent.setMuseum"></li>
+                </ul>
+            <div data-bind="with: currentMuseum"></div>
+        </div>
+        </div>
+        </aside>
+
+    </body>
+        <footer>
+<!-- Scripts-->
+        <script src="libs/knockout-3.2.0.js"></script>
+        <script src="libs/jquery.min.js"></script>
+
+        <script src="app.js"></script>
+
+<!-- API Key to load the API-->
+        <script async defer onerror="mapError()"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwGy255eqElY0wdfX7Unb78LlEl_P4jac&v=3&libraries=places&callback=initMap">
+        </script>
+        </footer>
+
+
+
+
+
+
+</html>
+

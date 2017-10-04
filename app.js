@@ -150,7 +150,7 @@ function populateInfoWindow() {
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function() {
             marker.setAnimation(null);
-        }, 750);
+        }, 700);
 
         infowindow.marker = marker;
         infowindow.setContent('');
@@ -180,7 +180,7 @@ function populateInfoWindow() {
 
         }
       }
-      // Fallback for failed request to get an article
+      // Callback for failed request to get an article
     }).fail(function() {
       infowindow.setContent('<div>There is something wrong; No Desciption Could be Loaded' + '</div>');
     });
