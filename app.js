@@ -172,7 +172,7 @@ function populateInfoWindow() {
         } else {
             var articleDesc = data[2][0];
             if (articleDesc.length > 0) {
-              infowindow.setContent('<div>' + '<h3> Wikipedia Description </h3>' + marker.name + '</div>' + articleDesc)
+              infowindow.setContent('<div>' + '<h3> Wikipedia Description </h3>' + marker.name + '</div>' + articleDesc);
             } else {
               infowindow.setContent('<div> There is no wikipedia description for this Spot </div>');
 
