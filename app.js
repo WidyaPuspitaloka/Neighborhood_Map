@@ -66,7 +66,6 @@ var museumLocations = [{
 ];
 
 
-
 var Museum = function(data) {
     this.name = ko.observable(data.name);
     this.visible = ko.observable(true);
@@ -76,7 +75,7 @@ var Museum = function(data) {
 }; // close var Museum
 
 
-var map;
+var map, infowindow, highlightedIcon, defaultIcon;
 
 function initMap() {
 
@@ -89,16 +88,15 @@ function initMap() {
         zoom: 13,
     });
 
-    var infoWindow;
-    var largeInfowindow = new google.maps.InfoWindow();
+    infowindow = new google.maps.InfoWindow();
 
 
     // Style the markers a bit. This will be our listing marker icon.
-    var defaultIcon = makeMarkerIcon('0091ff');
+    defaultIcon = makeMarkerIcon('0091ff');
 
     // Create a "highlighted location" marker color for when the user
     // mouses over the marker.
-    var highlightedIcon = makeMarkerIcon('FFFF24');
+    highlightedIcon = makeMarkerIcon('FFFF24');
     var bounds = new google.maps.LatLngBounds();
 
 
@@ -124,16 +122,12 @@ function initMap() {
         // Extend boundary
         bounds.extend(marker.position);
         // Create an onclick event to open an infowindow at each marker.
-        marker.addListener('click', function() {
-            populateInfoWindow(this, largeInfowindow);
-        });
+        marker.addListener('click', populateInfoWindow);
+
         // to change the colors.
-        marker.addListener('mouseover', function() {
-            this.setIcon(highlightedIcon);
-        });
-        marker.addListener('mouseout', function() {
-            this.setIcon(defaultIcon);
-        });
+        marker.addListener('mouseover', changeColor);
+
+        marker.addListener('mouseout', changeColor);
 
         map.fitBounds(bounds);
     }
@@ -142,9 +136,14 @@ function initMap() {
 
 } // close initmap function
 
-function populateInfoWindow(marker, infowindow) {
-    // Check to make sure the infowindow is not already opened on this marker.
 
+function changeColor() {
+    this.setIcon(highlightedIcon);
+}
+
+function populateInfoWindow() {
+    // Check to make sure the infowindow is not already opened on this marker.
+    var marker = this;
 
     if (infowindow.marker != marker) {
 
@@ -154,7 +153,7 @@ function populateInfoWindow(marker, infowindow) {
         }, 750);
 
         infowindow.marker = marker;
-        infowindow.setContent('');
+        // infowindow.setContent('');
         infowindow.open(map, marker);
         // Make sure the marker property is cleared if the infowindow is closed.
         infowindow.addListener('closeclick', function() {
@@ -173,18 +172,24 @@ function populateInfoWindow(marker, infowindow) {
                 } else {
                     var articleDesc = data[2][0];
                     if (articleDesc.length > 0) {
-                        infowindow.setContent('<div>' + marker.name + '</div>' + articleDesc);
+                        marker.content = '<h2>Wikipedia Description</h2>' + marker.name + '</br>' + articleDesc;
                     } else {
-                        infowindow.setContent('<div> There is no wikipedia description for this Museum </div>');
+                        marker.content = '<div> There is no wikipedia description for this Museum </div>';
 
                     }
                 }
+
+                getPhotos(marker);
             }
             // Fallback for failed request to get an article
         }).fail(function() {
             infowindow.setContent('<div>There is something wrong; No Desciption Could be Loaded' + '</div>');
         });
+        infowindow.open(map, marker);
 
+    }
+
+    function getPhotos(marker) {
         //Connects to the Flickr API and reads the results of the query into a JSON array. This query uses the 'flickr.photos.search' method to access all the photos in a particular person's user
         $.getJSON("https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=23aa3559b1f29f991f5c45181b3d3f8a&format=json&nojsoncallback=1", {
                 format: 'json',
@@ -203,14 +208,15 @@ function populateInfoWindow(marker, infowindow) {
                         flickrURL = 'https://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_m.jpg';
                         photoURL = photoURL + '<a class="flickr-img-container" target="_blank" href="' + item.link + '"><img class="flickr-img" src="' + flickrURL + '"></a>';
                     });
-                    infowindow.setContent(marker.name + '<br>' + photoURL);
+                    infowindow.setContent(marker.content + marker.name + '<br>' + '<h2>Flickr Images</h2>' + photoURL);
                 } else {
-                    infowindow.setContent('<div> There is no Flickr Images for this Spot </div>');
+                    infowindow.setContent(marker.content + '<div> There is no Flickr Images for this Spot </div>');
                 }
                 // Fallback for failed request to get an image
             }).fail(function() {
             infowindow.setContent('<div>There is something wrong; No Flickr Image Could be Loaded' + '</div>');
         });
+        infowindow.open(map, marker);
 
     } // close function populateinfowindow
 }
@@ -236,12 +242,23 @@ var ViewModel = function() {
 
     this.currentMuseum = ko.observable(null);
 
+    this.listOpen = ko.observable(true);
+
+    this.showList = function() {
+        if (self.listOpen()) {
+            self.listOpen(false);
+
+        } else {
+            self.listOpen(true);
+        }
+    };
+
     museumLocations.forEach(function(museumItem) {
         self.museumList.push(new Museum(museumItem));
 
     });
     this.setMuseum = function(clickedMuseum) {
-        console.log(clickedMuseum.marker); // clickedMuseum.marker
+        //console.log(clickedMuseum.marker); // clickedMuseum.marker
         self.currentMuseum(clickedMuseum);
         google.maps.event.trigger(clickedMuseum.marker, 'click');
     };
