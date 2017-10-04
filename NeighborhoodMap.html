@@ -4,7 +4,6 @@
         <title>Neighborhood Map</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/styles.css">
 
 
@@ -16,23 +15,19 @@
  <!-- Content with Museums -->
 
         <div id="list-box">
-        <div calss ="sidebar">
+        <div class ="sidebar">
 
-        <h1 id = "title"><span id="menu-icon" button type ="button"></span> Museums in Amsterdam</h1>
+        <h1 id = "title"><span id="menu-icon"></span> Museums in Amsterdam</h1>
 
         <div id="navigation-menu">
             <input class="search-input" data-bind="textInput: query" type="search" placeholder="Search Museums">
+            <div class="list-toggle" data-bind="click: showList">&#9776;</div>
         </div>
-
-                <ul id="navigation-list" data-bind = "foreach: filteredMuseums">
-                    <li class="navigation-list-item" data-bind = "text:name, click: $parent.setMuseum">
-
-                    </li>
+                <ul id="navigation-list" data-bind = "foreach: filteredMuseums, visible: listOpen">
+                    <li class="navigation-list-item" data-bind = "text:name, click: $parent.setMuseum"></li>
                 </ul>
-            <div data-bind="with: currentMuseum">
-            </div>
-            </div>
-            </div>
+            <div data-bind="with: currentMuseum"></div>
+        </div>
         </div>
 
 
